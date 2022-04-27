@@ -209,21 +209,20 @@ impl ColumnInfo {
                 // FIXME: Unresolved type mapping
                 col_def.custom(self.col_type.clone());
             }
-            Type::Blob(_) => {
-                // FIXME: Unresolved type mapping
-                col_def.custom(self.col_type.clone());
+            Type::Blob(blob_attr) => {
+                match blob_attr.length {
+                    Some(length) => col_def.binary_len(length),
+                    None => col_def.binary(),
+                };
             }
             Type::TinyBlob => {
-                // FIXME: Unresolved type mapping
-                col_def.custom(self.col_type.clone());
+                col_def.binary_len(2_u32.pow(8) - 1);
             }
             Type::MediumBlob => {
-                // FIXME: Unresolved type mapping
-                col_def.custom(self.col_type.clone());
+                col_def.binary_len(2_u32.pow(24) - 1);
             }
             Type::LongBlob => {
-                // FIXME: Unresolved type mapping
-                col_def.custom(self.col_type.clone());
+                col_def.binary_len(u32::MAX);
             }
             Type::Enum(enum_attr) => {
                 col_def.enumeration(&self.name, &enum_attr.values);
